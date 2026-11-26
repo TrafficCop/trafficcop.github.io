@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Pick your spirit animal</title>
+</head>
+<body>
+  <h1>Pick your spirit animal</h1>
+
+  <form id="animal-form">
+    <fieldset id="animal-options">
+      <div>
+        <label>
+          <input type="radio" name="animal" value="BEAR">
+          Bear
+          <img src="assets/bear.jpg" alt="Bear" width="100">
+        </label>
+      </div>
+      <div>
+        <label>
+          <input type="radio" name="animal" value="DOG">
+          Dog
+          <img src="assets/dog.jpg" alt="Dog" width="100">
+        </label>
+      </div>
+      <div>
+        <label>
+          <input type="radio" name="animal" value="LION">
+          Lion
+          <img src="assets/lion.jpg" alt="Lion" width="100">
+        </label>
+      </div>
+    </fieldset>
+
+    <button type="submit" id="submit-button" disabled>Submit</button>
+  </form>
+
+  <div id="result" hidden style="border: 1px solid black; padding: 8px;"></div>
+
+  <script>
+    const BEAR = "You have chosen the bear. The Bear is a fierce animal - those who are drawn to it have a tendency to battle. Hence, you will receive the gift of battle bears (steam version)";
+    const DOG = "You have chosen the dog. That means you've got that dawg in you. It's time to unleash that dawg - you will receive the gift of hinge premium.";
+    const LION = "You have chosen the lion. The lion does not make prudent financial decisions. The lion will receive $22 of gambling credit on kalshi for his 22nd birthday.";
+
+    const MESSAGES = { BEAR, DOG, LION };
+
+    const form = document.getElementById("animal-form");
+    const options = document.getElementById("animal-options");
+    const submitButton = document.getElementById("submit-button");
+    const result = document.getElementById("result");
+
+    form.addEventListener("change", function () {
+      submitButton.disabled = !form.querySelector('input[name="animal"]:checked');
+    });
+
+    const LOG_URL = "https://script.google.com/macros/s/AKfycbzQVGlpHr2MXWRexomsik47rCEaarNfjQk67a0M2rUDwIO-HMACMsadHdgHqbdT_LBu/exec";
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      const selected = form.querySelector('input[name="animal"]:checked');
+      if (!selected) return;
+
+      fetch(LOG_URL, {
+        method: "POST",
+        mode: "no-cors",
+        body: new URLSearchParams({
+          choice: selected.value,
+          clientTime: new Date().toString()
+        })
+      });
+
+      result.textContent = MESSAGES[selected.value];
+      result.hidden = false;
+
+      options.disabled = true;
+      submitButton.disabled = true;
+    });
+  </script>
+</body>
+</html>
